@@ -2,29 +2,35 @@ name: FFmpeg Build - Linux64 Nonfree 7.1
 
 on:
   push:
-    branches: [ main ]          # Chạy khi push vào main
-  workflow_dispatch:            # Cho phép chạy thủ công
+    branches: [ main ]
+  workflow_dispatch:
 
 jobs:
   build:
-    runs-on: ubuntu-latest      # Chạy trên runner Ubuntu
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v3 # Lấy mã nguồn
+        uses: actions/checkout@v4
 
       - name: Set Up Docker
-        uses: docker/setup-buildx-action@v2 # Cài Docker để build
+        uses: docker/setup-buildx-action@v3
 
       - name: Build Docker Image
         run: |
-          ./makeimage.sh linux64 nonfree 7.1 # Tạo image với phụ thuộc nonfree-7.1
+          ./makeimage.sh linux64 nonfree-7.1
 
       - name: Build FFmpeg
         run: |
-          ./build.sh linux64 nonfree 7.1     # Build bản linux64-nonfree-7.1
+          ./build.sh linux64 nonfree-7.1
+          ls artifacts/ # Kiểm tra file
 
       - name: Upload Artifact
-        uses: actions/upload-artifact@v3    # Đẩy kết quả lên artifacts
+        uses: actions/upload-artifact@v4
         with:
           name: ffmpeg-n7.1-latest-linux64-nonfree-7.1
           path: artifacts/ffmpeg-n7.1-latest-linux64-nonfree-7.1.tar.xz
+
+      - name: Debug on Failure
+        if: failure()
+        run: |
+          ls -la artifacts/
