@@ -17,11 +17,11 @@ jobs:
 
       - name: Build Docker Image
         run: |
-          ./makeimage.sh linux64 nonfree-7.1
+          ./makeimage.sh linux64 nonfree 7.1
 
       - name: Build FFmpeg
         run: |
-          ./build.sh linux64 nonfree-7.1
+          ./build.sh linux64 nonfree 7.1
           ls artifacts/ # Kiểm tra file
 
       - name: Upload Artifact
